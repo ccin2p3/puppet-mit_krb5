@@ -48,7 +48,7 @@ class mit_krb5::logging(
 ) {
 
   include ::mit_krb5
-  
+
   concat::fragment { 'mit_krb5::logging':
     target  => $mit_krb5::krb5_conf_path,
     order   => '00logging',

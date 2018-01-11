@@ -19,7 +19,10 @@
 
 # Overview
 
-This Puppet module is designed to facilitate the installation and configuration of [MIT Kerberos](http://web.mit.edu/kerberos/).  The primary scope includes installing the user utilities (kinit, etc) on the system and populating krb5.conf with the appropriate sections.
+This Puppet module is designed to facilitate the installation and configuration
+of [MIT Kerberos](http://web.mit.edu/kerberos/).  The primary scope includes
+installing the user utilities (kinit, etc) on the system and populating
+krb5.conf with the appropriate sections.
 
 Other tasks such as setting up KDC services are **not covered**.
 
@@ -73,7 +76,7 @@ Yields the following krb5.conf:
     .insecure.local = INSECURE.LOCAL
 ```
 
-Code such at this would mimic the example file shipped with CentOS/RHEL:
+Code such as this would mimic the example file shipped with CentOS/RHEL:
 ```puppet
 class { 'mit_krb5::install': }
 class { 'mit_krb5':
@@ -93,18 +96,20 @@ mit_krb5::realm { 'EXAMPLE.COM':
   kdc          => 'kerberos.example.com',
   admin_server => 'kerberos.example.com'
 }
-mit_krb5::domain_realm { 'INSECURE.LOCAL':
+mit_krb5::domain_realm { 'EXAMPLE.COM':
   domains => ['.example.com', 'example.com']
 }
 ```
 
 # Classes and Resources
 
-The module was structured into resources/classes that resemble the sections of krb5.conf.
+The module was structured into resources/classes that resemble the sections of
+krb5.conf.
 
 ## mit\_krb5
 
-Top-level class that installs MIT Kerberos and controls krb5.conf file.  Class parameters are used to define contents of \[libdefaults\] section.
+Top-level class that installs MIT Kerberos and controls krb5.conf file.  Class
+parameters are used to define contents of \[libdefaults\] section.
 
 ### Parameters from libdefaults section
 
@@ -124,6 +129,7 @@ Top-level class that installs MIT Kerberos and controls krb5.conf file.  Class p
 - `safe_checksum_type`
 - `preferred_preauth_types`
 - `ccache_type`
+- `canonicalize` (`mit_krb5` 1.11+ - RHEL6/wheezy only have 1.10)
 - `dns_lookup_kdc`
 - `dns_lookup_realm`
 - `dns_fallback`

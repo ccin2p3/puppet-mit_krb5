@@ -8,7 +8,7 @@
 # === Parameters
 #
 # [*default_realm*]
-#   This relation identifies the default realm to be used in a client host’s
+#   This relation identifies the default realm to be used in a client host's
 #   Kerberos activity. (REQUIRED)
 #
 # [*default_keytab_name*]
@@ -22,6 +22,9 @@
 # [*default_tkt_enctypes*]
 #   This relation identifies the supported list of session key encryption types
 #   that should be requested by the client. (Required type: array)
+
+# [*default_ccache_name*]
+#   This relation allows you to set a default credential cache name
 #
 # [*permitted_enctypes*]
 #   This relation identifies the permitted list of session key encryption
@@ -50,15 +53,15 @@
 #
 # [*k5login_authoritative*]
 #   If the value of this relation is true (the default), principals must be
-#   listed in a local user’s k5login file to be granted login access, if a
+#   listed in a local user's k5login file to be granted login access, if a
 #   k5login file exists.  If the value of this relation is false, a principal
 #   may still be granted login access through other mechanisms even if a
 #   k5login file exists but does not list the principal.
 #
 # [*k5login_directory*]
-#   If set, the library will look for a local user’s k5login file within the
+#   If set, the library will look for a local user's k5login file within the
 #   named directory, with a filename corresponding to the local username.  If
-#   not set, the library will look for k5login files in the user’s home
+#   not set, the library will look for k5login files in the user's home
 #   directory, with the filename .k5login.  For security reasons, k5login files
 #   must be owned by the local user or by root.
 #
@@ -95,6 +98,12 @@
 #   default value for this setting is "17, 16, 15, 14", which forces libkrb5 to
 #   attempt to use PKINIT if it is supported.
 #
+# [*canonicalize*]
+#   If this flag is set to true, initial ticket requests to the KDC will
+#   request canonicalization of the client principal name, and answers with
+#   different client principals than the requested principal will be accepted.
+#   The default value is false.
+#
 # [*ccache_type*]
 #   User this parameter on systems which are DCE clients, to specify the type
 #   of cache to be created by kinit, or hen forwarded tickets are received. DCE
@@ -116,10 +125,10 @@
 #   of the preceding options are specified, this option has no effect.
 #
 # [*realm_try_domains*]
-#   Indicate whether a host’s domain components should be used to determine the
+#   Indicate whether a host's domain components should be used to determine the
 #   Kerberos realm of the host.  The value of this variable is an integer: -1
-#   means not to search, 0 means to try the host’s domain itself, 1 means to
-#   also try the domain’s immediate parent, and so forth.  The library’s usual
+#   means not to search, 0 means to try the host's domain itself, 1 means to
+#   also try the domain's immediate parent, and so forth.  The library's usual
 #   mechanism for locating Kerberos realms is used to determine whether a
 #   domain is a valid realm -- which may involve consulting DNS if
 #   dns_lookup_kdc is set.
@@ -198,6 +207,7 @@ class mit_krb5(
   $default_keytab_name      = '',
   $default_tgs_enctypes     = [],
   $default_tkt_enctypes     = [],
+  $default_ccache_name      = '',
   $permitted_enctypes       = [],
   $allow_weak_crypto        = '',
   $clockskew                = '',
@@ -210,6 +220,7 @@ class mit_krb5(
   $safe_checksum_type       = '',
   $preferred_preauth_types  = '',
   $ccache_type              = '',
+  $canonicalize             = '',
   $dns_lookup_kdc           = '',
   $dns_lookup_realm         = '',
   $dns_fallback             = '',
@@ -233,6 +244,7 @@ class mit_krb5(
   # SECTION: Parameter validation {
   validate_string(
     $default_realm,
+    $default_ccache_name,
     $default_keytab_name,
     $clockskew,
     $k5login_directory,
@@ -266,7 +278,7 @@ class mit_krb5(
   anchor { 'mit_krb5::begin': }
 
   class { '::mit_krb5::install': }
-  
+
   if ($alter_etc_services == true) {
     class { '::mit_krb5::config::etc_services':
       require => Class['::mit_krb5::install']
@@ -274,9 +286,9 @@ class mit_krb5(
   }
 
   concat { $krb5_conf_path:
-    owner  => $krb5_conf_owner,
-    group  => $krb5_conf_group,
-    mode   => $krb5_conf_mode,
+    owner => $krb5_conf_owner,
+    group => $krb5_conf_group,
+    mode  => $krb5_conf_mode,
   }
   concat::fragment { 'mit_krb5::libdefaults':
     target  => $krb5_conf_path,
@@ -287,7 +299,7 @@ class mit_krb5(
   # END Resource creation }
 
   # SECTION: Resource ordering {
-  Anchor['mit_krb5::begin'] -> Class['mit_krb5::install'] ->
-    Concat[$krb5_conf_path] -> Anchor['mit_krb5::end']
+  Anchor['mit_krb5::begin'] -> Class['mit_krb5::install']
+    -> Concat[$krb5_conf_path] -> Anchor['mit_krb5::end']
   # END Resource ordering }
 }
