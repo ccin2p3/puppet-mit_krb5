@@ -1,6 +1,6 @@
 {
   "name": "ccin2p3-mit_krb5",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "source": "https://github.com/ccin2p3/puppet-mit_krb5.git",
   "author": "Patrick Mooney <patrick.f.mooney@gmail.com>",
   "license": "Apache-2.0",
@@ -9,8 +9,8 @@
   "project_page": "https://github.com/ccin2p3/puppet-mit_krb5",
   "issues_url": "https://github.com/ccin2p3/puppet-mit_krb5/issues",
   "dependencies": [
-    { "name": "puppetlabs/concat", "version_requirement": ">= 1.0.x < 3.0.0" }, 
-    { "name": "puppetlabs/stdlib", "version_requirement": ">= 3.x < 4.0.0" }
+    { "name": "puppetlabs/concat", "version_requirement": ">= 1.0 <= 4.2.0" }, 
+    { "name": "puppetlabs/stdlib", "version_requirement": ">= 3.0 <= 4.25.0" }
   ],
   "tags": [
     "kerberos",
