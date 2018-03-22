@@ -166,6 +166,10 @@
 #   default value is the "krb5/plugins" subdirectory of the krb5 library
 #   directory.
 #
+# [*includedir*]
+#   If set, any files inside this directory are automatically included 
+#   into the KRB5 configuration.
+#
 # [*krb5_conf_path*]
 #   Path to krb5.conf file.  (Default: /etc/krb5.conf)
 #
@@ -228,8 +232,9 @@ class mit_krb5(
   $krb5_conf_owner          = 'root',
   $krb5_conf_group          = 'root',
   $krb5_conf_mode           = '0444',
+  $includedir               = $mit_krb5::params::includedir,
   $alter_etc_services       = false
-) {
+) inherits mit_krb5::params {
   # SECTION: Parameter validation {
   validate_string(
     $default_realm,
@@ -266,7 +271,7 @@ class mit_krb5(
   anchor { 'mit_krb5::begin': }
 
   class { '::mit_krb5::install': }
-  
+
   if ($alter_etc_services == true) {
     class { '::mit_krb5::config::etc_services':
       require => Class['::mit_krb5::install']
@@ -278,6 +283,13 @@ class mit_krb5(
     group  => $krb5_conf_group,
     mode   => $krb5_conf_mode,
   }
+
+  concat::fragment {'mit_krb5::header':
+    target  => $krb5_conf_path,
+    order   => '00',
+    content => template('mit_krb5/header.erb'),
+  }
+
   concat::fragment { 'mit_krb5::libdefaults':
     target  => $krb5_conf_path,
     order   => '01libdefaults',
