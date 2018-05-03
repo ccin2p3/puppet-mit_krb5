@@ -1,0 +1,7 @@
+# This file managed by Puppet.  Do not edit!
+<%- if !@includedir.empty? -%>
+# Configuration snippets may be placed in this directory as well
+<% @includedir.each do |dir| -%>
+includedir <%= dir %>
+<% end %>
+<% end -%>

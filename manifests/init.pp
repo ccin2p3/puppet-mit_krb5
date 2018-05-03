@@ -228,8 +228,9 @@ class mit_krb5(
   $krb5_conf_owner          = 'root',
   $krb5_conf_group          = 'root',
   $krb5_conf_mode           = '0444',
-  $alter_etc_services       = false
-) {
+  $alter_etc_services       = false,
+  $includedir               = $mit_krb5::params::includedir,
+) inherits mit_krb5::params {
   # SECTION: Parameter validation {
   validate_string(
     $default_realm,
@@ -266,7 +267,7 @@ class mit_krb5(
   anchor { 'mit_krb5::begin': }
 
   class { '::mit_krb5::install': }
-  
+
   if ($alter_etc_services == true) {
     class { '::mit_krb5::config::etc_services':
       require => Class['::mit_krb5::install']
@@ -274,10 +275,17 @@ class mit_krb5(
   }
 
   concat { $krb5_conf_path:
-    owner  => $krb5_conf_owner,
-    group  => $krb5_conf_group,
-    mode   => $krb5_conf_mode,
+    owner => $krb5_conf_owner,
+    group => $krb5_conf_group,
+    mode  => $krb5_conf_mode,
   }
+
+  concat::fragment {'mit_krb5::header':
+    target  => $krb5_conf_path,
+    order   => '00',
+    content => template('mit_krb5/header.erb'),
+  }
+
   concat::fragment { 'mit_krb5::libdefaults':
     target  => $krb5_conf_path,
     order   => '01libdefaults',
