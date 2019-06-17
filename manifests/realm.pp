@@ -86,7 +86,12 @@
 #
 # [*pkinit_pool*]
 #   Specifies the location of intermediate certificates which may be used by the
-#   client to complete the trust chain between a KDC certificate and a trusted anchor. 
+#   client to complete the trust chain between a KDC certificate and a trusted anchor.
+#
+# [*http_anchors*]
+#   When  KDCs and kpasswd servers are accessed through HTTPS proxies, this tag can
+#   be used to specify the location of the CA certificate which should be trusted to
+#   issue the certificate for a proxy server.
 #
 # [*rotate_servers*]
 #   Whether to apply a random rotation to the list of KDCs and admin servers so
@@ -125,6 +130,7 @@ define mit_krb5::realm(
   $pkinit_anchors         = '',
   $pkinit_pool            = '',
   Boolean $rotate_servers = false,
+  $http_anchors           = '',
 ) {
 
   include ::mit_krb5
