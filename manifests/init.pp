@@ -176,6 +176,17 @@
 #   flag to false is more secure, but may force users to exclusively use fully
 #   qualified domain names when authenticating to services.
 #
+# [*pkinit_anchors*]
+#   This relation allows you set the path of a certificate authority file.
+#
+# [*spake_preauth_groups*]
+#   SPAKE preauthentication (added in release 1.17) uses public key cryptography
+#   techniques to protect against password dictionary attacks.  Accepts a
+#   whitespace or comma-separated list of words which specifies the groups
+#   allowed for SPAKE preauthentication.
+#   The possible values are: 'edwards25519', 'P-256', 'P-384', 'P-521'.
+#   The recommended value is: 'edwards25519'.
+#
 # [*plugin_base_dir*]
 #   If set, determines the base directory where krb5 plugins are located.  The
 #   default value is the "krb5/plugins" subdirectory of the krb5 library
@@ -263,6 +274,8 @@ class mit_krb5(
   $forwardable                      = '',
   $proxiable                        = '',
   $rdns                             = '',
+  $pkinit_anchors                   = '',
+  $spake_preauth_groups             = '',
   String $plugin_base_dir           = '',
   $include                          = '',
   $includedir                       = '',
