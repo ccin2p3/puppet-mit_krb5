@@ -84,31 +84,31 @@
 # Copyright 2016 Modestas Vainius.
 # Copyright (c) IN2P3 Computing Centre, IN2P3, CNRS
 #
-define mit_krb5::dbmodules(
-  String $realm               = $title,
-  $database_name              = '',
-  $db_library                 = '',
-  $disable_last_success       = '',
-  $disable_lockout            = '',
-  $ldap_cert_path             = '',
-  $ldap_conns_per_server      = '',
-  $ldap_kadmind_dn            = '',
-  $ldap_kdc_dn                = '',
-  $ldap_kerberos_container_dn = '',
-  $ldap_servers               = '',
-  $ldap_service_password_file = '',
+define mit_krb5::dbmodules (
+  String $realm                                = $title,
+  Optional[Mit_krb5::Bool_or_str] $database_name        = undef,
+  Optional[Mit_krb5::Bool_or_str] $db_library           = undef,
+  Optional[Mit_krb5::Bool_or_str] $disable_last_success = undef,
+  Optional[Mit_krb5::Bool_or_str] $disable_lockout      = undef,
+  Optional[Array[String]] $ldap_cert_path             = undef,
+  Optional[Array[String]] $ldap_conns_per_server      = undef,
+  Optional[Array[String]] $ldap_kadmind_dn            = undef,
+  Optional[Array[String]] $ldap_kdc_dn                = undef,
+  Optional[Array[String]] $ldap_kerberos_container_dn = undef,
+  Optional[Array[String]] $ldap_servers               = undef,
+  Optional[String] $ldap_service_password_file = undef,
 ) {
   include mit_krb5
   ensure_resource('concat::fragment', 'mit_krb5::dbmodules_header', {
-    target  => $mit_krb5::krb5_conf_path,
-    order   => '30dbmodules_header',
-    content => "\n[dbmodules]\n",
+      target  => $mit_krb5::krb5_conf_path,
+      order   => '30dbmodules_header',
+      content => "\n[dbmodules]\n",
   })
   if (! empty($mit_krb5::db_module_dir)) {
     ensure_resource('concat::fragment', 'mit_krb5::dbmodules_db_module_dir', {
-      target  => $mit_krb5::krb5_conf_path,
-      order   => '31dbmodules_db_module_dir',
-      content => "    db_module_dir = ${mit_krb5::db_module_dir}\n",
+        target  => $mit_krb5::krb5_conf_path,
+        order   => '31dbmodules_db_module_dir',
+        content => "    db_module_dir = ${mit_krb5::db_module_dir}\n",
     })
   }
   concat::fragment { "mit_krb5::dbmodules::${realm}":

@@ -60,7 +60,7 @@
 #		 TEST4 = host2
 #	     }
 #        }
-#                                                   
+#
 # [*auth_to_local_names*]
 #   This subsection allows you to set explicit mappings from principal names to
 #   local user names.  The tag is the mapping name, and the value is the
@@ -115,30 +115,29 @@
 # Copyright 2013 Patrick Mooney.
 # Copyright (c) IN2P3 Computing Centre, IN2P3, CNRS
 #
-define mit_krb5::realm(
-  $kdc                    = '',
-  $master_kdc             = '',
-  $admin_server           = '',
-  $database_module        = '',
-  $default_domain         = '',
-  $v4_instance_convert    = '',
-  $v4_realm               = '',
-  $auth_to_local_names    = '',
-  $auth_to_local          = '',
-  $kpasswd_server         = '',
-  $v4_realm_convert       = '',
-  $pkinit_anchors         = '',
-  $pkinit_pool            = '',
-  Boolean $rotate_servers = false,
-  $http_anchors           = '',
+define mit_krb5::realm (
+  Optional[Array[String]] $kdc        = undef,
+  Optional[Array[String]] $master_kdc = undef,
+  Optional[String] $admin_server        = undef,
+  Optional[String] $database_module     = undef,
+  Optional[String] $default_domain      = undef,
+  Optional[String] $v4_instance_convert = undef,
+  Optional[String] $v4_realm            = undef,
+  Optional[String] $auth_to_local_names = undef,
+  Optional[Array[String]] $auth_to_local       = undef,
+  Optional[String] $kpasswd_server      = undef,
+  Array $v4_realm_convert               = [],
+  Optional[String] $pkinit_anchors      = undef,
+  Optional[String] $pkinit_pool         = undef,
+  Boolean $rotate_servers               = false,
+  Optional[String] $http_anchors        = undef,
 ) {
-
-  include ::mit_krb5
+  include mit_krb5
 
   ensure_resource('concat::fragment', 'mit_krb5::realm_header', {
-    target  => $mit_krb5::krb5_conf_path,
-    order   => '10realm_header',
-    content => "[realms]\n",
+      target  => $mit_krb5::krb5_conf_path,
+      order   => '10realm_header',
+      content => "[realms]\n",
   })
   concat::fragment { "mit_krb5::realm::${title}":
     target  => $mit_krb5::krb5_conf_path,
