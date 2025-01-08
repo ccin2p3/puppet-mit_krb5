@@ -3,15 +3,14 @@
   "dependencies": [
     {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">=4.13.0 <9.0.0"
+      "version_requirement": ">=4.13.0 <10.0.0"
     },
     {
       "name": "puppetlabs/concat",
       "version_requirement": ">=1.1.0 <10.0.0"
     },
     {
-      "name": "ccin2p3/etc_services",
-      "version_requirement": ">=2.0.0 <3.0.0"
+      "name": "ccin2p3/etc_services"
     }
   ],
   "description": "Install and configure MIT Kerberos v5 (initial version from Patrick Mooney)",
