@@ -226,6 +226,20 @@
 # [*krb5_conf_mode*]
 #   File mode for krb5.conf.  (Default: 0444)
 #
+# [*alter_etc_services*]
+#
+# [*domain_realms*]
+#
+# [*capaths*]
+#
+# [*appdefaults*]
+#
+# [*realms*]
+#
+# [*dbmodules*]
+#
+# [*krb5_conf_warn*]
+#
 # === Examples
 #
 #  class { 'mit_krb5':
@@ -241,59 +255,59 @@
 # Copyright 2013 Patrick Mooney.
 # Copyright (c) IN2P3 Computing Centre, IN2P3, CNRS
 #
-class mit_krb5(
-  String $default_realm                = '',
-  String $default_keytab_name          = '',
-  $default_tgs_enctypes                = [],
-  $default_tkt_enctypes                = [],
-  String $default_ccache_name          = '',
-  $permitted_enctypes                  = [],
-  $allow_weak_crypto                   = '',
-  String $clockskew                    = '',
-  $ignore_acceptor_hostname            = '',
-  $k5login_authoritative               = '',
-  String $k5login_directory            = '',
-  String $kdc_timesync                 = '',
-  String $kdc_req_checksum_type        = '',
-  String $ap_req_checksum_type         = '',
-  String $safe_checksum_type           = '',
-  String $preferred_preauth_types      = '',
-  String $ccache_type                  = '',
-  $canonicalize                        = '',
-  $dns_canonicalize_hostname           = '',
-  $dns_lookup_kdc                      = '',
-  $dns_lookup_realm                    = '',
-  $dns_fallback                        = '',
-  String $realm_try_domains            = '',
-  $extra_addresses                     = [],
-  String $udp_preference_limit         = '',
-  $verify_ap_req_nofail                = '',
-  String $ticket_lifetime              = '',
-  String $renew_lifetime               = '',
-  $noaddresses                         = '',
-  $forwardable                         = '',
-  $proxiable                           = '',
-  $rdns                                = '',
-  $pkinit_anchors                      = '',
-  $spake_preauth_groups                = '',
-  String $plugin_base_dir              = '',
-  $include                             = '',
-  $includedir                          = '',
-  $module                              = '',
-  String $db_module_dir                = '',
-  Stdlib::Absolutepath $krb5_conf_path = '/etc/krb5.conf',
-  String $krb5_conf_owner              = 'root',
-  String $krb5_conf_group              = 'root',
-  Stdlib::Filemode $krb5_conf_mode     = '0444',
-  Boolean $alter_etc_services          = false,
-  Boolean $krb5_conf_warn              = true,
-  Hash $domain_realms                  = {},
-  Hash $capaths                        = {},
-  Hash $appdefaults                    = {},
-  Hash $realms                         = {},
-  Hash $dbmodules                      = {},
-  String[1] $krb5_conf_d_path          = '/etc/krb5.conf.d',
-  Boolean $krb5_conf_d_purge           = false,
+class mit_krb5 (
+  Optional[String] $default_realm               = undef,
+  Optional[String] $default_keytab_name         = undef,
+  Array $default_tgs_enctypes                   = [],
+  Array $default_tkt_enctypes                   = [],
+  Optional[String] $default_ccache_name         = undef,
+  Array $permitted_enctypes                     = [],
+  Optional[Boolean] $allow_weak_crypto          = undef,
+  Optional[String] $clockskew                   = undef,
+  Optional[String] $ignore_acceptor_hostname    = undef,
+  Optional[String] $k5login_authoritative       = undef,
+  Optional[String] $k5login_directory           = undef,
+  Optional[String] $kdc_timesync                = undef,
+  Optional[String] $kdc_req_checksum_type       = undef,
+  Optional[String] $ap_req_checksum_type        = undef,
+  Optional[String] $safe_checksum_type          = undef,
+  Optional[String] $preferred_preauth_types     = undef,
+  Optional[String] $ccache_type                 = undef,
+  Optional[String] $canonicalize                = undef,
+  Optional[Boolean] $dns_canonicalize_hostname  = undef,
+  Optional[Boolean] $dns_lookup_kdc             = undef,
+  Optional[Boolean] $dns_lookup_realm           = undef,
+  Optional[Boolean] $dns_fallback               = undef,
+  Optional[String] $realm_try_domains           = undef,
+  Array $extra_addresses                        = [],
+  Optional[String] $udp_preference_limit        = undef,
+  Optional[Boolean] $verify_ap_req_nofail       = undef,
+  Optional[String] $ticket_lifetime             = undef,
+  Optional[String] $renew_lifetime              = undef,
+  Optional[Mit_krb5::Bool_or_str] $noaddresses  = undef,
+  Optional[Mit_krb5::Bool_or_str] $forwardable  = undef,
+  Optional[Mit_krb5::Bool_or_str] $proxiable    = undef,
+  Optional[Mit_krb5::Bool_or_str] $rdns         = undef,
+  Optional[Array[String]] $pkinit_anchors       = undef,
+  Optional[Array[String]] $spake_preauth_groups = undef,
+  Optional[Array[String]] $plugin_base_dir      = undef,
+  Optional[Array[String]] $include              = undef,
+  Optional[Array[String]] $includedir           = undef,
+  Optional[Array[String]] $module               = undef,
+  Optional[String] $db_module_dir               = undef,
+  String $krb5_conf_path                        = '/etc/krb5.conf',
+  String $krb5_conf_d_path                      = '/etc/krb5.conf.d',
+  String $krb5_conf_owner                       = 'root',
+  String $krb5_conf_group                       = 'root',
+  String $krb5_conf_mode                        = '0444',
+  Boolean $alter_etc_services                   = false,
+  Boolean $krb5_conf_warn                       = true,
+  Hash $domain_realms                           = {},
+  Hash $capaths                                 = {},
+  Hash $appdefaults                             = {},
+  Hash $realms                                  = {},
+  Hash $dbmodules                               = {},
+  Boolean $krb5_conf_d_purge                    = false,
 ) {
   # SECTION: Parameter validation {
   # Boolean-type parameters are not type-validated at this time.
@@ -307,13 +321,11 @@ class mit_krb5(
   # END Parameter validation }
 
   # SECTION: Resource creation {
-  anchor { 'mit_krb5::begin': }
-
-  class { '::mit_krb5::install': }
+  contain 'mit_krb5::install'
 
   if ($alter_etc_services == true) {
-    class { '::mit_krb5::config::etc_services':
-      require => Class['::mit_krb5::install']
+    class { 'mit_krb5::config::etc_services':
+      require => Class['mit_krb5::install'],
     }
   }
 
@@ -321,7 +333,7 @@ class mit_krb5(
     owner => $krb5_conf_owner,
     group => $krb5_conf_group,
     mode  => $krb5_conf_mode,
-    warn  => $krb5_conf_warn
+    warn  => $krb5_conf_warn,
   }
   concat::fragment { 'mit_krb5::header':
     target  => $krb5_conf_path,
@@ -355,9 +367,8 @@ class mit_krb5(
   # END Resource creation }
 
   # SECTION: Resource ordering {
-  Anchor['mit_krb5::begin']
-  -> Class['mit_krb5::install']
+  contain 'mit_krb5::install'
+  Class['mit_krb5::install']
   -> Concat[$krb5_conf_path]
-  -> Anchor['mit_krb5::end']
   # END Resource ordering }
 }

@@ -11,7 +11,11 @@
 # Copyright 2013 Patrick Mooney.
 # Copyright (c) IN2P3 Computing Centre, IN2P3, CNRS
 #
-class mit_krb5::install($packages = undef) {
+# @param packages
+#
+class mit_krb5::install (
+  Optional[Variant[String, Array[String]]] $packages = undef,
+) {
   if $packages {
     if is_array($packages) {
       $install = flatten($packages)

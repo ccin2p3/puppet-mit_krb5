@@ -12,20 +12,31 @@
 # Copyright 2013 Patrick Mooney.
 # Copyright (c) IN2P3 Computing Centre, IN2P3, CNRS
 #
-
-define mit_krb5::appdefaults(
-  $debug                 = '',
-  $ticket_lifetime       = '',
-  $renew_lifetime        = '',
-  $forwardable           = '',
-  $krb4_convert          = '',
-  $ignore_afs            = '',
+# @param debug
+#
+# @param ticket_lifetime
+#
+# @param renew_lifetime
+#
+# @param forwardable
+#
+# @param krb4_convert
+#
+# @param ignore_afs
+#
+define mit_krb5::appdefaults (
+  Optional[String] $debug                      = undef,
+  Optional[String] $ticket_lifetime            = undef,
+  Optional[String] $renew_lifetime             = undef,
+  Optional[Mit_krb5::Bool_or_str] $forwardable = undef,
+  Optional[String] $krb4_convert    = undef,
+  Optional[String] $ignore_afs      = undef,
 ) {
   include mit_krb5
   ensure_resource('concat::fragment', 'mit_krb5::appdefaults_header', {
-    target  => $mit_krb5::krb5_conf_path,
-    order   => '50appdefauls_header',
-    content => "\n[appdefaults]",
+      target  => $mit_krb5::krb5_conf_path,
+      order   => '50appdefauls_header',
+      content => "\n[appdefaults]",
   })
   concat::fragment { "mit_krb5::appdefaults::${title}":
     target  => $mit_krb5::krb5_conf_path,
@@ -33,5 +44,3 @@ define mit_krb5::appdefaults(
     content => template('mit_krb5/appdefaults.erb'),
   }
 }
-
-
